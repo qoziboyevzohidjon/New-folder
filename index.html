@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#7000ff">
+  <meta name="description" content="Yuzum Market — kundalik xaridlaringiz uchun qulay onlayn bozor.">
+  <title>Yuzum Market — qulay xaridlar</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --purple: #7000ff;
+      --purple-dark: #5700cc;
+      --ink: #24212b;
+      --muted: #817d89;
+      --line: #eeedf1;
+      --surface: #f7f6f9;
+      --lime: #d7ff50;
+      --radius: 18px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; color: var(--ink); background: #fff; }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    a { color: inherit; text-decoration: none; }
+    .container { width: min(1240px, calc(100% - 40px)); margin-inline: auto; }
+
+    .topline { background: #f5f2fb; color: #5f5968; font-size: 12px; }
+    .topline-inner { min-height: 36px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .topline-left, .topline-right { display: flex; align-items: center; gap: 22px; }
+    .topline strong { color: var(--purple); font-weight: 700; }
+
+    .header { position: sticky; top: 0; z-index: 5; background: #fff; border-bottom: 1px solid var(--line); }
+    .header-main { min-height: 82px; display: flex; align-items: center; gap: 25px; }
+    .brand { display: inline-flex; align-items: center; gap: 9px; flex: 0 0 auto; font-size: 25px; font-weight: 850; letter-spacing: -1.3px; }
+    .brand-mark { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 13px; color: #fff; background: var(--purple); font-size: 21px; transform: rotate(-5deg); }
+    .brand span:last-child { color: var(--purple); }
+    .catalog-button { height: 44px; padding: 0 16px; border: 0; border-radius: 11px; background: #f2eaff; color: var(--purple); font-weight: 700; white-space: nowrap; }
+    .catalog-button:hover { background: #e8d9ff; }
+    .search { display: flex; height: 44px; flex: 1; min-width: 100px; border: 1px solid #dedbe4; border-radius: 11px; overflow: hidden; }
+    .search:focus-within { border-color: var(--purple); box-shadow: 0 0 0 3px #7000ff18; }
+    .search input { width: 100%; min-width: 0; padding: 0 14px; border: 0; outline: 0; color: var(--ink); }
+    .search input::placeholder { color: #a39eaa; }
+    .search button { width: 52px; flex: 0 0 52px; border: 0; color: #fff; background: var(--purple); font-size: 19px; }
+    .search button:hover { background: var(--purple-dark); }
+    .header-actions { display: flex; align-items: center; gap: 7px; }
+    .action { min-width: 62px; height: 52px; display: grid; place-items: center; gap: 1px; padding: 3px 6px; border: 0; border-radius: 10px; background: transparent; color: #4d4855; font-size: 11px; }
+    .action:hover { background: var(--surface); }
+    .action-icon { position: relative; font-size: 20px; line-height: 1.2; }
+    .cart-count { position: absolute; top: -7px; right: -10px; min-width: 17px; height: 17px; display: grid; place-items: center; padding: 0 4px; border-radius: 20px; color: #fff; background: var(--purple); font-size: 10px; font-weight: 800; }
+
+    .category-nav { display: flex; align-items: center; gap: 24px; height: 44px; overflow-x: auto; scrollbar-width: none; white-space: nowrap; color: #625d69; font-size: 13px; }
+    .category-nav::-webkit-scrollbar { display: none; }
+    .category-nav a:hover { color: var(--purple); }
+    .category-nav .sale { color: #e44b77; font-weight: 700; }
+
+    .hero { position: relative; min-height: 330px; display: flex; align-items: center; margin: 24px auto 0; padding: 42px 7%; overflow: hidden; border-radius: 25px; color: #fff; background: linear-gradient(112deg, #4100a6 0%, #7000ff 50%, #a45bff 100%); }
+    .hero::before, .hero::after { content: ""; position: absolute; border-radius: 50%; pointer-events: none; }
+    .hero::before { width: 390px; height: 390px; right: 6%; top: -155px; background: #ffffff12; }
+    .hero::after { width: 300px; height: 300px; right: 2%; bottom: -220px; background: #d7ff5033; }
+    .hero-copy { position: relative; z-index: 1; max-width: 570px; }
+    .hero-kicker { display: inline-flex; align-items: center; gap: 7px; margin-bottom: 14px; padding: 7px 12px; border: 1px solid #ffffff40; border-radius: 30px; color: #f2e6ff; font-size: 12px; }
+    .hero h1 { max-width: 550px; margin: 0; font-size: clamp(34px, 5vw, 58px); line-height: 1.04; letter-spacing: -2.6px; }
+    .hero p { margin: 16px 0 23px; color: #efe4ff; font-size: 15px; }
+    .hero-cta { min-height: 46px; display: inline-flex; align-items: center; gap: 10px; padding: 0 19px; border: 0; border-radius: 12px; color: #2c2440; background: var(--lime); font-weight: 800; }
+    .hero-cta:hover { background: #c9f238; transform: translateY(-1px); }
+    .hero-art { position: absolute; z-index: 1; right: 11%; top: 50%; width: 245px; height: 245px; display: grid; place-items: center; border: 1px solid #ffffff42; border-radius: 50%; background: #ffffff15; transform: translateY(-50%) rotate(-8deg); }
+    .hero-art-inner { width: 188px; height: 188px; display: grid; place-items: center; border-radius: 50%; background: #ffffffed; box-shadow: 0 20px 50px #2c005566; font-size: 100px; transform: rotate(8deg); }
+    .hero-sticker { position: absolute; top: 22px; right: 4px; padding: 12px 14px; border-radius: 15px; color: #342646; background: var(--lime); font-size: 12px; font-weight: 900; transform: rotate(9deg); }
+
+    .benefits { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 20px 0 36px; }
+    .benefit { display: flex; align-items: center; gap: 12px; min-height: 68px; padding: 12px 15px; border: 1px solid var(--line); border-radius: 14px; }
+    .benefit-icon { width: 38px; height: 38px; display: grid; flex: 0 0 auto; place-items: center; border-radius: 12px; background: #f4edff; font-size: 18px; }
+    .benefit strong { display: block; margin-bottom: 2px; font-size: 12px; }
+    .benefit small { color: var(--muted); font-size: 11px; }
+
+    .section { margin: 0 0 42px; scroll-margin-top: 150px; }
+    .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 15px; margin-bottom: 18px; }
+    .section-heading h2 { margin: 0; font-size: 25px; letter-spacing: -.8px; }
+    .section-heading p { margin: 5px 0 0; color: var(--muted); font-size: 13px; }
+    .text-link { color: var(--purple); font-size: 13px; font-weight: 700; }
+    .category-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 13px; }
+    .category-card { min-height: 132px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; border: 1px solid var(--line); border-radius: 16px; background: #fff; font-size: 13px; font-weight: 650; transition: transform .18s, box-shadow .18s; }
+    .category-card:hover { transform: translateY(-3px); box-shadow: 0 9px 26px #24123810; }
+    .category-emoji { width: 61px; height: 61px; display: grid; place-items: center; border-radius: 20px; background: var(--surface); font-size: 32px; }
+
+    .product-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 17px; }
+    .product-card { position: relative; min-width: 0; padding: 10px; border: 1px solid var(--line); border-radius: 16px; background: #fff; transition: box-shadow .18s, transform .18s; }
+    .product-card:hover { transform: translateY(-3px); box-shadow: 0 10px 28px #24123812; }
+    .product-image { position: relative; height: 205px; display: grid; place-items: center; overflow: hidden; border-radius: 11px; background: #f6f4f8; }
+    .product-image img { width: 100%; height: 100%; object-fit: cover; transition: transform .3s; }
+    .product-card:hover .product-image img { transform: scale(1.04); }
+    .discount { position: absolute; top: 10px; left: 10px; padding: 5px 8px; border-radius: 7px; color: #fff; background: #ed4d76; font-size: 11px; font-weight: 800; }
+    .heart { position: absolute; top: 8px; right: 8px; width: 34px; height: 34px; display: grid; place-items: center; border: 0; border-radius: 50%; color: #665f6d; background: #ffffffed; font-size: 19px; }
+    .heart.is-liked { color: #e84673; }
+    .product-info { padding: 11px 2px 2px; }
+    .product-title { min-height: 38px; margin: 0 0 6px; display: -webkit-box; overflow: hidden; color: #3d3943; font-size: 13px; line-height: 1.45; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+    .rating { color: #8b8591; font-size: 11px; }
+    .rating b { color: #f2a500; }
+    .price-row { display: flex; align-items: end; justify-content: space-between; gap: 6px; margin-top: 10px; }
+    .price { font-size: 17px; font-weight: 850; letter-spacing: -.5px; }
+    .old-price { margin-left: 5px; color: #aaa5ae; font-size: 11px; text-decoration: line-through; }
+    .installment { width: fit-content; margin-top: 7px; padding: 4px 6px; border-radius: 5px; color: #4a3d19; background: #f2ecce; font-size: 10px; }
+    .add-button { width: 36px; height: 34px; border: 0; border-radius: 9px; color: #fff; background: var(--purple); font-size: 20px; line-height: 1; }
+    .add-button:hover { background: var(--purple-dark); }
+    .empty-state { grid-column: 1 / -1; padding: 48px 20px; border: 1px dashed #d9d4df; border-radius: 16px; color: var(--muted); text-align: center; }
+
+    .promo-strip { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin: 0 0 42px; padding: 24px 30px; border-radius: 18px; background: #f3edff; }
+    .promo-strip h2 { margin: 0 0 5px; font-size: 21px; }
+    .promo-strip p { margin: 0; color: #736b7d; font-size: 13px; }
+    .promo-icon { font-size: 44px; }
+    .promo-button { padding: 12px 17px; border: 0; border-radius: 10px; color: #fff; background: var(--purple); font-weight: 700; white-space: nowrap; }
+
+    footer { margin-top: 50px; color: #e9e5ee; background: #25212d; }
+    .footer-main { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 35px; padding: 42px 0 35px; }
+    .footer-brand { color: #fff; }
+    .footer-brand .brand-mark { color: #fff; background: var(--purple); }
+    .footer-brand span:last-child { color: #caa6ff; }
+    .footer-copy { max-width: 265px; margin: 14px 0; color: #b5afbd; font-size: 12px; line-height: 1.7; }
+    .footer-column h3 { margin: 4px 0 15px; color: #fff; font-size: 13px; }
+    .footer-column a { display: block; margin: 10px 0; color: #b5afbd; font-size: 12px; }
+    .footer-column a:hover { color: #fff; }
+    .footer-bottom { display: flex; justify-content: space-between; gap: 16px; padding: 17px 0; border-top: 1px solid #ffffff1a; color: #a9a3b0; font-size: 11px; }
+    .toast { position: fixed; z-index: 10; right: 22px; bottom: 22px; max-width: calc(100% - 44px); padding: 13px 18px; border-radius: 12px; color: #fff; background: #282330; box-shadow: 0 8px 30px #1e172b35; font-size: 13px; opacity: 0; pointer-events: none; transform: translateY(10px); transition: .2s; }
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 900px) {
+      .header-main { gap: 13px; }
+      .catalog-button { padding-inline: 12px; font-size: 12px; }
+      .header-actions { gap: 0; }
+      .action { min-width: 48px; }
+      .category-grid { grid-template-columns: repeat(3, 1fr); }
+      .benefits { grid-template-columns: repeat(2, 1fr); }
+      .product-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .product-image { height: 190px; }
+      .hero-art { right: 5%; width: 205px; height: 205px; }
+      .hero-art-inner { width: 155px; height: 155px; font-size: 78px; }
+      .footer-main { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 620px) {
+      .container { width: min(100% - 28px, 1240px); }
+      .topline-inner { min-height: 32px; justify-content: center; }
+      .topline-right { display: none; }
+      .topline-left { gap: 9px; font-size: 10px; }
+      .header-main { min-height: 66px; flex-wrap: wrap; gap: 9px; padding: 10px 0; }
+      .brand { font-size: 21px; }
+      .brand-mark { width: 33px; height: 33px; font-size: 18px; }
+      .catalog-button { height: 38px; margin-left: auto; }
+      .header-actions { order: 1; }
+      .action { min-width: 42px; height: 38px; }
+      .action-label { display: none; }
+      .action-icon { font-size: 19px; }
+      .search { order: 2; flex-basis: 100%; height: 40px; }
+      .category-nav { height: 40px; gap: 19px; font-size: 12px; }
+      .hero { min-height: 300px; margin-top: 15px; padding: 30px 22px; border-radius: 19px; }
+      .hero-copy { max-width: 100%; }
+      .hero h1 { max-width: 310px; font-size: 39px; letter-spacing: -1.8px; }
+      .hero p { max-width: 250px; font-size: 13px; line-height: 1.5; }
+      .hero-art { right: -52px; top: auto; bottom: -40px; width: 150px; height: 150px; opacity: .45; transform: none; }
+      .hero-art-inner { width: 110px; height: 110px; font-size: 55px; }
+      .hero-sticker { top: 3px; right: -8px; font-size: 10px; }
+      .hero-cta { min-height: 42px; padding-inline: 14px; font-size: 12px; }
+      .benefits { gap: 8px; margin: 13px 0 30px; }
+      .benefit { min-height: 63px; gap: 8px; padding: 9px; }
+      .benefit-icon { width: 31px; height: 31px; border-radius: 10px; font-size: 15px; }
+      .benefit strong { font-size: 10px; }
+      .benefit small { font-size: 9px; }
+      .section { margin-bottom: 32px; scroll-margin-top: 160px; }
+      .section-heading h2 { font-size: 21px; }
+      .section-heading p { font-size: 11px; }
+      .category-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+      .category-card { min-height: 103px; gap: 7px; border-radius: 13px; font-size: 11px; }
+      .category-emoji { width: 49px; height: 49px; border-radius: 16px; font-size: 26px; }
+      .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+      .product-card { padding: 7px; border-radius: 13px; }
+      .product-image { height: 155px; border-radius: 9px; }
+      .product-title { min-height: 36px; font-size: 11px; }
+      .price { font-size: 14px; }
+      .old-price { display: block; margin: 2px 0 0; }
+      .add-button { width: 32px; height: 31px; }
+      .promo-strip { margin-bottom: 32px; padding: 18px; }
+      .promo-strip h2 { font-size: 17px; }
+      .promo-strip p { max-width: 220px; font-size: 11px; line-height: 1.5; }
+      .promo-icon { display: none; }
+      .promo-button { padding: 10px 12px; font-size: 11px; }
+      .footer-main { gap: 23px 16px; padding: 32px 0; }
+      .footer-column h3 { font-size: 12px; }
+      .footer-column a, .footer-copy { font-size: 11px; }
+      .footer-bottom { flex-direction: column; gap: 6px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="topline">
+    <div class="container topline-inner">
+      <div class="topline-left"><span>📍 Toshkent</span><span>Buyurtmangizni <strong>ertaga yetkazamiz</strong></span></div>
+      <div class="topline-right"><a href="#footer">Yordam</a><a href="#footer">Biz bilan bog‘lanish</a><span>O‘zbekcha⌄</span></div>
+    </div>
+  </div>
+
+  <header class="header">
+    <div class="container">
+      <div class="header-main">
+        <a class="brand" href="#" aria-label="Yuzum Market bosh sahifasi"><span class="brand-mark">y</span><span>yuzum</span></a>
+        <button class="catalog-button" type="button" onclick="document.querySelector('#categories').scrollIntoView({behavior:'smooth'})">☷ &nbsp;Katalog</button>
+        <form class="search" id="search-form" role="search">
+          <input id="search-input" type="search" placeholder="Mahsulotlarni qidiring..." aria-label="Mahsulotlarni qidiring">
+          <button type="submit" aria-label="Qidirish">⌕</button>
+        </form>
+        <div class="header-actions">
+          <button class="action" type="button" id="account-button" aria-label="Profil"><span class="action-icon">♙</span><span class="action-label">Profil</span></button>
+          <button class="action" type="button" id="favorites-button" aria-label="Sevimlilar"><span class="action-icon">♡</span><span class="action-label">Sevimlilar</span></button>
+          <button class="action" type="button" id="cart-button" aria-label="Savat"><span class="action-icon">🛍<span class="cart-count" id="cart-count">0</span></span><span class="action-label">Savat</span></button>
+        </div>
+      </div>
+      <nav class="category-nav" aria-label="Asosiy kategoriyalar">
+        <a class="sale" href="#products" data-category="Aksiyalar">🔥 Aksiyalar</a>
+        <a href="#products" data-category="Elektronika">Elektronika</a>
+        <a href="#products" data-category="Maishiy texnika">Maishiy texnika</a>
+        <a href="#products" data-category="Uy va bog‘">Uy va bog‘</a>
+        <a href="#products" data-category="Kiyim">Kiyim</a>
+        <a href="#products" data-category="Go‘zallik">Go‘zallik</a>
+        <a href="#products" data-category="Bolalar uchun">Bolalar uchun</a>
+        <a href="#products" data-category="Sport">Sport</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero" aria-label="Yuzum Market taklifi">
+      <div class="hero-copy">
+        <div class="hero-kicker">✨ Yuzum Market bilan xarid — maroqli</div>
+        <h1>Yaxshi narxlar, yoqimli xaridlar!</h1>
+        <p>Har kuni kerakli narsalar — bir joyda va qulay narxlarda.</p>
+        <button class="hero-cta" type="button" onclick="document.querySelector('#products').scrollIntoView({behavior:'smooth'})">Xaridni boshlash <span>→</span></button>
+      </div>
+      <div class="hero-art" aria-hidden="true"><div class="hero-art-inner">🛍️</div><div class="hero-sticker">AJOYIB<br>NARXLAR</div></div>
+    </section>
+
+    <section class="benefits" aria-label="Xarid afzalliklari">
+      <div class="benefit"><span class="benefit-icon">🚚</span><span><strong>Tez yetkazib berish</strong><small>Buyurtmangiz eshigingizgacha</small></span></div>
+      <div class="benefit"><span class="benefit-icon">💳</span><span><strong>Qulay to‘lov</strong><small>O‘zingizga mos usulni tanlang</small></span></div>
+      <div class="benefit"><span class="benefit-icon">↩️</span><span><strong>Oson qaytarish</strong><small>14 kun ichida qaytarish mumkin</small></span></div>
+      <div class="benefit"><span class="benefit-icon">🛡️</span><span><strong>Ishonchli xarid</strong><small>Har bir buyurtma nazoratda</small></span></div>
+    </section>
+
+    <section class="section" id="categories">
+      <div class="section-heading"><div><h2>Kategoriyalar</h2><p>O‘zingizga keraklisini tez toping</p></div><a class="text-link" href="#products">Barchasi →</a></div>
+      <div class="category-grid">
+        <a class="category-card" href="#products" data-category="Elektronika"><span class="category-emoji">🎧</span>Elektronika</a>
+        <a class="category-card" href="#products" data-category="Maishiy texnika"><span class="category-emoji">🧹</span>Maishiy texnika</a>
+        <a class="category-card" href="#products" data-category="Uy va bog‘"><span class="category-emoji">🪴</span>Uy va bog‘</a>
+        <a class="category-card" href="#products" data-category="Kiyim"><span class="category-emoji">👕</span>Kiyim</a>
+        <a class="category-card" href="#products" data-category="Go‘zallik"><span class="category-emoji">🧴</span>Go‘zallik</a>
+        <a class="category-card" href="#products" data-category="Bolalar uchun"><span class="category-emoji">🧸</span>Bolalar uchun</a>
+      </div>
+    </section>
+
+    <section class="section" id="products">
+      <div class="section-heading">
+        <div><h2 id="products-heading">Ommabop mahsulotlar</h2><p id="products-subtitle">Xaridorlar tanlovi — bugungi sevimlilar</p></div>
+        <a class="text-link" href="#products" id="reset-filter">Barchasini ko‘rish →</a>
+      </div>
+      <div class="product-grid" id="product-grid" aria-live="polite"></div>
+    </section>
+
+    <section class="promo-strip">
+      <div><h2>Yuzum Market — xaridlar endi yanada qulay!</h2><p>Sevimli mahsulotlaringizni toping va xarid qilishni boshlang.</p></div>
+      <span class="promo-icon" aria-hidden="true">🎁</span>
+      <button class="promo-button" type="button" onclick="document.querySelector('#products').scrollIntoView({behavior:'smooth'})">Mahsulotlarni ko‘rish</button>
+    </section>
+  </main>
+
+  <footer id="footer">
+    <div class="container">
+      <div class="footer-main">
+        <div><a class="brand footer-brand" href="#"><span class="brand-mark">y</span><span>yuzum</span></a><p class="footer-copy">Yuzum Market — kundalik xaridlaringiz uchun qulay onlayn bozor. Yaxshi mahsulotlar, yoqimli narxlar.</p></div>
+        <div class="footer-column"><h3>Yuzum Market</h3><a href="#categories">Biz haqimizda</a><a href="#products">Mahsulotlar</a><a href="#footer">Hamkorlar uchun</a></div>
+        <div class="footer-column"><h3>Xaridorlarga</h3><a href="#footer">Yetkazib berish</a><a href="#footer">To‘lov usullari</a><a href="#footer">Qaytarish va almashtirish</a></div>
+        <div class="footer-column"><h3>Yordam</h3><a href="tel:+998712000000">+998 71 200 00 00</a><a href="mailto:salom@yuzum.uz">salom@yuzum.uz</a><a href="#footer">Har kuni, 09:00–21:00</a></div>
+      </div>
+      <div class="footer-bottom"><span>© 2026 Yuzum Market. Barcha huquqlar himoyalangan.</span><span>O‘zbekiston bo‘ylab qulay xaridlar 💜</span></div>
+    </div>
+  </footer>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const products = [
+      { id: 1, name: "Simsiz quloqchin, shovqinni kamaytirish funksiyasi bilan", category: "Elektronika", price: "249 000", oldPrice: "399 000", discount: "-38%", rating: "4.8", reviews: "238", installment: "29 050 so‘mdan / oyiga", image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80" },
+      { id: 2, name: "Aqlli soat — kundalik faollik va uyqu nazorati", category: "Elektronika", price: "329 000", oldPrice: "489 000", discount: "-33%", rating: "4.7", reviews: "164", installment: "38 383 so‘mdan / oyiga", image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80" },
+      { id: 3, name: "Minimal uslubdagi uy uchun stol chirog‘i", category: "Uy va bog‘", price: "189 000", oldPrice: "259 000", discount: "-27%", rating: "4.9", reviews: "91", installment: "22 050 so‘mdan / oyiga", image: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=600&q=80" },
+      { id: 4, name: "Parvarish uchun yuz tozalash vositasi to‘plami", category: "Go‘zallik", price: "159 000", oldPrice: "219 000", discount: "-27%", rating: "4.8", reviews: "305", installment: "18 550 so‘mdan / oyiga", image: "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?auto=format&fit=crop&w=600&q=80" },
+      { id: 5, name: "Uy uchun ixcham va kuchli changyutgich", category: "Maishiy texnika", price: "699 000", oldPrice: "899 000", discount: "-22%", rating: "4.6", reviews: "127", installment: "81 550 so‘mdan / oyiga", image: "https://images.unsplash.com/photo-1558317374-067fb5f30001?auto=format&fit=crop&w=600&q=80" },
+      { id: 6, name: "Kundalik kiyish uchun qulay klassik krossovka", category: "Kiyim", price: "379 000", oldPrice: "529 000", discount: "-28%", rating: "4.7", reviews: "82", installment: "44 216 so‘mdan / oyiga", image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80" },
+      { id: 7, name: "Bolalar uchun yumshoq va quvnoq o‘yinchoq", category: "Bolalar uchun", price: "119 000", oldPrice: "159 000", discount: "-25%", rating: "4.9", reviews: "73", installment: "13 883 so‘mdan / oyiga", image: "https://images.unsplash.com/photo-1559454403-b8fb88521f11?auto=format&fit=crop&w=600&q=80" },
+      { id: 8, name: "Simsiz portativ kolonkа — sevimli musiqangiz hamroh", category: "Elektronika", price: "279 000", oldPrice: "359 000", discount: "-22%", rating: "4.8", reviews: "146", installment: "32 550 so‘mdan / oyiga", image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&w=600&q=80" }
+    ];
+
+    const grid = document.querySelector("#product-grid");
+    const searchInput = document.querySelector("#search-input");
+    const toast = document.querySelector("#toast");
+    let activeCategory = "";
+    let cartTotal = 0;
+    let toastTimer;
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove("show"), 2400);
+    }
+
+    function renderProducts() {
+      const query = searchInput.value.trim().toLocaleLowerCase("uz");
+      const visible = products.filter(product => {
+        const matchesCategory = !activeCategory || activeCategory === "Aksiyalar" || product.category === activeCategory;
+        const matchesQuery = `${product.name} ${product.category}`.toLocaleLowerCase("uz").includes(query);
+        return matchesCategory && matchesQuery;
+      });
+
+      grid.innerHTML = visible.length ? visible.map(product => `
+        <article class="product-card">
+          <div class="product-image">
+            <img src="${product.image}" alt="${product.name}" loading="lazy">
+            <span class="discount">${product.discount}</span>
+            <button class="heart" type="button" aria-label="${product.name}ni sevimlilarga qo‘shish" aria-pressed="false">♡</button>
+          </div>
+          <div class="product-info">
+            <p class="product-title">${product.name}</p>
+            <div class="rating"><b>★ ${product.rating}</b> · ${product.reviews} ta baho</div>
+            <div class="installment">${product.installment}</div>
+            <div class="price-row"><div><span class="price">${product.price} so‘m</span><span class="old-price">${product.oldPrice} so‘m</span></div><button class="add-button" type="button" aria-label="${product.name}ni savatga qo‘shish">+</button></div>
+          </div>
+        </article>`).join("") : `<div class="empty-state">Bu so‘rov bo‘yicha mahsulot topilmadi. Boshqa nom bilan qidirib ko‘ring.</div>`;
+
+      grid.querySelectorAll(".add-button").forEach(button => button.addEventListener("click", () => {
+        cartTotal += 1;
+        document.querySelector("#cart-count").textContent = cartTotal;
+        showToast("Mahsulot savatga qo‘shildi");
+      }));
+      grid.querySelectorAll(".heart").forEach(button => button.addEventListener("click", () => {
+        const liked = button.classList.toggle("is-liked");
+        button.textContent = liked ? "♥" : "♡";
+        button.setAttribute("aria-pressed", String(liked));
+        showToast(liked ? "Sevimlilarga qo‘shildi" : "Sevimlilardan olib tashlandi");
+      }));
+
+      document.querySelector("#products-heading").textContent = activeCategory ? activeCategory : query ? "Qidiruv natijalari" : "Ommabop mahsulotlar";
+      document.querySelector("#products-subtitle").textContent = visible.length ? `${visible.length} ta mahsulot` : "Boshqa mahsulotlarni qidirib ko‘ring";
+    }
+
+    document.querySelector("#search-form").addEventListener("submit", event => {
+      event.preventDefault();
+      activeCategory = "";
+      renderProducts();
+      document.querySelector("#products").scrollIntoView({ behavior: "smooth" });
+    });
+    searchInput.addEventListener("input", renderProducts);
+    document.querySelectorAll("[data-category]").forEach(link => link.addEventListener("click", () => {
+      activeCategory = link.dataset.category;
+      renderProducts();
+    }));
+    document.querySelector("#reset-filter").addEventListener("click", event => {
+      event.preventDefault();
+      activeCategory = "";
+      searchInput.value = "";
+      renderProducts();
+    });
+    document.querySelector("#cart-button").addEventListener("click", () => showToast(cartTotal ? `Savatingizda ${cartTotal} ta mahsulot bor` : "Savatingiz hozircha bo‘sh"));
+    document.querySelector("#favorites-button").addEventListener("click", () => {
+      const count = document.querySelectorAll(".heart.is-liked").length;
+      showToast(count ? `Sevimlilaringiz: ${count} ta mahsulot` : "Hozircha sevimlilar yo‘q");
+    });
+    document.querySelector("#account-button").addEventListener("click", () => showToast("Profil bo‘limi tez orada ishga tushadi"));
+    renderProducts();
+  </script>
+</body>
+</html>
